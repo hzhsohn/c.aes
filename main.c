@@ -1,5 +1,6 @@
 #include "../aes.h"
 #include "tchar.h"
+#include <stdlib.h>
 #include "c_base64.h"
 
 int main()
@@ -70,39 +71,27 @@ int main()
 
 	//CBC模式
 	{
-		char *pData;
-		int pDataLen;
-		const char iv[32]="0102030405060708AABBCCDDEEFFGGHH"; //加密偏移量,可自定义
+		char iv[33]="0102030405060708AABBCCDDEEFFGGHH"; //加密偏移量,可自定义
+		int cbcLen;
 		char buf[1024];
+		char *pData;
 
 		//加密时前面带有IV初始化向量信息
-		char data[]="yhB1ODGomlPGf4IPk7v2VSAFPox0hCGdGODm7xNDWGwFBfyuSGdwPJnU2/ql15YbORKwx3/D3QcjpPr6U8kFNuZtFW4jW0FBMIWNGbCylYa3IMpmjDwC2+JTv4mHJ+j/NcNC6dg+UWNpz4JRlt2kvSv7xqYxU4Q2o3uzR77TDKo=";
-		
-		pData=malloc(sizeof(data)*1.5f);
-		pDataLen=zhBase64Encode(data,sizeof(data),pData);
+		char data[]="123456999abc";
 
-		
-		nb=8;
-		nk=8;
-		printf("\nData Size= %d bits, Key Size= %d bits , nb=%d ,nk=%d\n",nb*32,nk*32,nb,nk);
-		//0412的MD5
-		strcpy(key,"69a829ce4f4e0d631ca634a866590a60");
-		zhAesGKey(nb,nk,key);
-		zhAesDecryptCBC(iv,sizeof(iv),pData,pDataLen);
-		printf("%s\n",pData);
-
-		//-------再次加密再解密-----------
 		nb=6;
 		nk=6;
 		printf("\nData Size= %d bits, Key Size= %d bits , nb=%d ,nk=%d\n",nb*32,nk*32,nb,nk);
 		zhAesGKey(nb,nk,key);
-		pDataLen=zhAesEncryptCBC(iv,sizeof(iv),pData,strlen(pData),buf,sizeof(buf));
-		printf("加密后:%s\n",buf);
-		zhAesDecryptCBC(iv,sizeof(iv),buf,pDataLen);
-		printf("解密后:%s\n",buf);
+		cbcLen=zhAesEncryptCBC(iv,32,data,strlen(data),buf,sizeof(buf));
+
+		pData=(char*)malloc(cbcLen*1.5f);
+		zhBase64Encode(buf,cbcLen,pData);
+		printf("加密后base64: %s\n",pData);
+		zhAesDecryptCBC(iv,32,buf,cbcLen);
+		printf("解密后: %s\n",buf);
 
 		free(pData);
-		pData=NULL;
 	}
 
 	getchar();

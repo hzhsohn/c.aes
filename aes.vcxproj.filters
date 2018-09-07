@@ -23,10 +23,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="c_base64.h">
+    <ClInclude Include="..\aes.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\aes.h">
+    <ClInclude Include="c_base64.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
