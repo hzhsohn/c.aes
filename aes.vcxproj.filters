@@ -15,14 +15,17 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\aes.c">
+    <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.c">
+    <ClCompile Include="..\aes.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="c_base64.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\aes.h">
       <Filter>Source Files</Filter>
     </ClInclude>

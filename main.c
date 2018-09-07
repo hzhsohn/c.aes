@@ -1,4 +1,4 @@
-#include "aes.h"
+#include "../aes.h"
 #include "tchar.h"
 #include "c_base64.h"
 
@@ -18,10 +18,10 @@ int main()
 	printf("钥匙大小 %d\n",strlen(str));
 
 	//初始化
-    aesGenTables();
+    zhAesGenTables();
 
-    aesStrtoHex(str,key);//将字符转成16进制
-    aesHextoStr(key,str);  //just to test these two functions
+    zhAesStrtoHex(str,key);//将字符转成16进制
+    zhAesHextoStr(key,str);  //just to test these two functions
 
     printf("Key= ");
     for (i=0;i<64;i++) printf("%c",str[i]);
@@ -35,15 +35,15 @@ int main()
     {  
         printf("\nBlock Size= %d bits, Key Size= %d bits , nb=%d ,nk=%d\n",nb*32,nk*32,nb,nk);
 		//设置数据位和钥匙位,和数据钥匙
-        aesGKey(nb,nk,key);
+        zhAesGKey(nb,nk,key);
         printf("Plain=   ");
         for (i=0;i<sizeof(block);i++) printf("%02x",block[i]);
         printf("\n");
-        aesEncrypt(block);
+        zhAesEncrypt(block);
         printf("固定%d字节,Encrypt= ",nb*4);
         for (i=0;i<nb*4;i++) printf("%02x",(unsigned char)block[i]);
         printf("\n");
-        aesDecrypt(block);
+        zhAesDecrypt(block);
         printf("Decrypt= ");
         for (i=0;i<sizeof(block);i++) printf("%02x",block[i]);
         printf("\n");
@@ -59,12 +59,12 @@ int main()
 		nk=4;
 
 		printf("\nData Size= %d bits, Key Size= %d bits , nb=%d ,nk=%d\n",nb*32,nk*32,nb,nk);
-		aesGKey(nb,nk,key);
-		dstLen=aesEncryptData(block,strlen(block),dstBuff,sizeof(dstBuff));
+		zhAesGKey(nb,nk,key);
+		dstLen=zhAesEncryptData(block,strlen(block),dstBuff,sizeof(dstBuff));
 		printf("%d字节,Encrypt= ",dstLen);
 		for (i=0;i<dstLen;i++) printf("%02x",(unsigned char)dstBuff[i]);
 			printf("\n");
-		aesDecryptData(dstBuff,sizeof(dstBuff));
+		zhAesDecryptData(dstBuff,sizeof(dstBuff));
 		printf("%s\n",block);
 	}
 
@@ -72,36 +72,34 @@ int main()
 	{
 		char *pData;
 		int pDataLen;
-		char iv[32];
+		const char iv[32]="0102030405060708AABBCCDDEEFFGGHH"; //加密偏移量,可自定义
 		char buf[1024];
 
 		//加密时前面带有IV初始化向量信息
-		char data[]="GJdECjI0/Ig7zzlpPI/Bk7wd3G7EoFPj3MBtWQym87nyaUhOzUXWr+6ALKNXo9QhSwY2yiGRtd8+fRDC6OsLFMpyysZzHuyihVjRBDNMeWDR1JMI+BGAgTHQM6Ll1hJkFkFPR0/fbUUSlrUF40ChKfZFtDfSsZ2SWfljnme1WIY=";
-		pDataLen=base64Decode(data,sizeof(data),&pData);
+		char data[]="yhB1ODGomlPGf4IPk7v2VSAFPox0hCGdGODm7xNDWGwFBfyuSGdwPJnU2/ql15YbORKwx3/D3QcjpPr6U8kFNuZtFW4jW0FBMIWNGbCylYa3IMpmjDwC2+JTv4mHJ+j/NcNC6dg+UWNpz4JRlt2kvSv7xqYxU4Q2o3uzR77TDKo=";
+		
+		pData=malloc(sizeof(data)*1.5f);
+		pDataLen=zhBase64Encode(data,sizeof(data),pData);
 
-		//导出IV向量数据
-		memcpy(iv,pData,sizeof(iv));
-		pDataLen-=32;
-		memmove(pData,&pData[32],pDataLen);
-
+		
 		nb=8;
 		nk=8;
 		printf("\nData Size= %d bits, Key Size= %d bits , nb=%d ,nk=%d\n",nb*32,nk*32,nb,nk);
-		//ydm-0412的MD5
-		strcpy(key,"7bd89f2325ca6afb1eec2b2c07e9006c");
-		aesGKey(nb,nk,key);
-		aesDecryptCBC(iv,sizeof(iv),pData,pDataLen);
+		//0412的MD5
+		strcpy(key,"69a829ce4f4e0d631ca634a866590a60");
+		zhAesGKey(nb,nk,key);
+		zhAesDecryptCBC(iv,sizeof(iv),pData,pDataLen);
 		printf("%s\n",pData);
 
 		//-------再次加密再解密-----------
 		nb=6;
 		nk=6;
 		printf("\nData Size= %d bits, Key Size= %d bits , nb=%d ,nk=%d\n",nb*32,nk*32,nb,nk);
-		aesGKey(nb,nk,key);
-		pDataLen=aesEncryptCBC(iv,sizeof(iv),pData,strlen(pData),buf,sizeof(buf));
-		printf("%s\n",buf);
-		aesDecryptCBC(iv,sizeof(iv),buf,pDataLen);
-		printf("%s\n",buf);
+		zhAesGKey(nb,nk,key);
+		pDataLen=zhAesEncryptCBC(iv,sizeof(iv),pData,strlen(pData),buf,sizeof(buf));
+		printf("加密后:%s\n",buf);
+		zhAesDecryptCBC(iv,sizeof(iv),buf,pDataLen);
+		printf("解密后:%s\n",buf);
 
 		free(pData);
 		pData=NULL;
