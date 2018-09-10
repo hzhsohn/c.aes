@@ -1,3 +1,12 @@
+/*
+
+git@github.com:hzhsohn/c.aes.git
+
+han.zhihong
+
+*/
+
+
 #ifdef  __cplusplus
 extern "C" {
 #endif
