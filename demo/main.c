@@ -79,18 +79,24 @@ int main()
 		//加密时前面带有IV初始化向量信息
 		char data[]="123456999abc";
 
+		printf("\n\n--------------------------------\nCBC模式\n\n");
+
+
+		 //生成密码表
 		nb=6;
 		nk=6;
-		printf("\nData Size= %d bits, Key Size= %d bits , nb=%d ,nk=%d\n",nb*32,nk*32,nb,nk);
+
 		zhAesGKey(nb,nk,key);
 		cbcLen=zhAesEncryptCBC(iv,32,data,strlen(data),buf,sizeof(buf));
-
 		pData=(char*)malloc(cbcLen*1.5f);
 		zhBase64Encode(buf,cbcLen,pData);
 		printf("加密后base64: %s\n",pData);
+		
+		//解密
+		zhAesGKey(nb,nk,key);
 		zhAesDecryptCBC(iv,32,buf,cbcLen);
 		printf("解密后: %s\n",buf);
-
+		
 		free(pData);
 	}
 
