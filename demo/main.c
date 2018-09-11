@@ -50,14 +50,14 @@ int main()
         printf("\n");
     }
 
-	//加密数据块
-	{
+	
+	{//加密数据块,128位加密
 		int dstLen;
 		char dstBuff[48];
 
 		strcpy(block,"123456789");
 		nb=4;
-		nk=4;
+		nk=8;//4/6/8
 
 		printf("\nData Size= %d bits, Key Size= %d bits , nb=%d ,nk=%d\n",nb*32,nk*32,nb,nk);
 		zhAesGKey(nb,nk,key);
